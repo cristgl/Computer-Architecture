@@ -1,0 +1,220 @@
+	.file	"listado1.c"
+	.comm	v1,80000000,64
+	.comm	v2,80000000,64
+	.comm	v3,80000000,64
+	.section	.rodata
+	.align 8
+.LC0:
+	.string	"Faltan n\302\272 componentes del vector"
+	.align 8
+.LC3:
+	.string	"Tiempo(seg.):%11.9f\t / Tama\303\261o Vectores:%u\t/ V1[0]+V2[0]=V3[0](%8.6f+%8.6f=%8.6f) / /\tV1[%d]+V2[%d]=V3[%d](%8.6f+%8.6f=%8.6f) /\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB2:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	pushq	%r12
+	pushq	%rbx
+	subq	$96, %rsp
+	.cfi_offset 12, -24
+	.cfi_offset 3, -32
+	movl	%edi, -84(%rbp)
+	movq	%rsi, -96(%rbp)
+	movq	%fs:40, %rax
+	movq	%rax, -24(%rbp)
+	xorl	%eax, %eax
+	cmpl	$1, -84(%rbp)
+	jg	.L2
+	movl	$.LC0, %edi
+	call	puts
+	movl	$-1, %edi
+	call	exit
+.L2:
+	movq	-96(%rbp), %rax
+	addq	$8, %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	call	atoi
+	movl	%eax, -76(%rbp)
+	cmpl	$10000000, -76(%rbp)
+	jbe	.L3
+	movl	$10000000, -76(%rbp)
+.L3:
+	movl	$0, -80(%rbp)
+	jmp	.L4
+.L9:
+	movl	-76(%rbp), %eax
+	testq	%rax, %rax
+	js	.L5
+	pxor	%xmm0, %xmm0
+	cvtsi2sdq	%rax, %xmm0
+	jmp	.L6
+.L5:
+	movq	%rax, %rdx
+	shrq	%rdx
+	andl	$1, %eax
+	orq	%rax, %rdx
+	pxor	%xmm0, %xmm0
+	cvtsi2sdq	%rdx, %xmm0
+	addsd	%xmm0, %xmm0
+.L6:
+	movsd	.LC1(%rip), %xmm1
+	mulsd	%xmm0, %xmm1
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	-80(%rbp), %xmm0
+	movsd	.LC1(%rip), %xmm2
+	mulsd	%xmm2, %xmm0
+	addsd	%xmm0, %xmm1
+	movq	%xmm1, %rax
+	movl	-80(%rbp), %edx
+	movslq	%edx, %rdx
+	movq	%rax, v1(,%rdx,8)
+	movl	-76(%rbp), %eax
+	testq	%rax, %rax
+	js	.L7
+	pxor	%xmm0, %xmm0
+	cvtsi2sdq	%rax, %xmm0
+	jmp	.L8
+.L7:
+	movq	%rax, %rdx
+	shrq	%rdx
+	andl	$1, %eax
+	orq	%rax, %rdx
+	pxor	%xmm0, %xmm0
+	cvtsi2sdq	%rdx, %xmm0
+	addsd	%xmm0, %xmm0
+.L8:
+	movsd	.LC1(%rip), %xmm1
+	mulsd	%xmm1, %xmm0
+	pxor	%xmm1, %xmm1
+	cvtsi2sd	-80(%rbp), %xmm1
+	movsd	.LC1(%rip), %xmm2
+	mulsd	%xmm2, %xmm1
+	subsd	%xmm1, %xmm0
+	movq	%xmm0, %rax
+	movl	-80(%rbp), %edx
+	movslq	%edx, %rdx
+	movq	%rax, v2(,%rdx,8)
+	addl	$1, -80(%rbp)
+.L4:
+	movl	-80(%rbp), %eax
+	cmpl	-76(%rbp), %eax
+	jb	.L9
+	leaq	-64(%rbp), %rax
+	movq	%rax, %rsi
+	movl	$0, %edi
+	call	clock_gettime
+	movl	$0, -80(%rbp)
+	jmp	.L10
+.L11:
+	movl	-80(%rbp), %eax
+	cltq
+	movsd	v1(,%rax,8), %xmm1
+	movl	-80(%rbp), %eax
+	cltq
+	movsd	v2(,%rax,8), %xmm0
+	addsd	%xmm0, %xmm1
+	movq	%xmm1, %rax
+	movl	-80(%rbp), %edx
+	movslq	%edx, %rdx
+	movq	%rax, v3(,%rdx,8)
+	addl	$1, -80(%rbp)
+.L10:
+	movl	-80(%rbp), %eax
+	cmpl	-76(%rbp), %eax
+	jb	.L11
+	leaq	-48(%rbp), %rax
+	movq	%rax, %rsi
+	movl	$0, %edi
+	call	clock_gettime
+	movq	-48(%rbp), %rdx
+	movq	-64(%rbp), %rax
+	subq	%rax, %rdx
+	movq	%rdx, %rax
+	pxor	%xmm1, %xmm1
+	cvtsi2sdq	%rax, %xmm1
+	movq	-40(%rbp), %rdx
+	movq	-56(%rbp), %rax
+	subq	%rax, %rdx
+	movq	%rdx, %rax
+	pxor	%xmm0, %xmm0
+	cvtsi2sdq	%rax, %xmm0
+	movsd	.LC2(%rip), %xmm2
+	divsd	%xmm2, %xmm0
+	addsd	%xmm0, %xmm1
+	movq	%xmm1, %rax
+	movq	%rax, -72(%rbp)
+	movl	-76(%rbp), %eax
+	subl	$1, %eax
+	movl	%eax, %eax
+	movq	v3(,%rax,8), %rbx
+	movl	-76(%rbp), %eax
+	subl	$1, %eax
+	movl	%eax, %eax
+	movq	v2(,%rax,8), %r11
+	movl	-76(%rbp), %eax
+	subl	$1, %eax
+	movl	%eax, %eax
+	movq	v1(,%rax,8), %r8
+	movl	-76(%rbp), %eax
+	leal	-1(%rax), %r12d
+	movl	-76(%rbp), %eax
+	leal	-1(%rax), %ecx
+	movl	-76(%rbp), %eax
+	leal	-1(%rax), %edx
+	movq	v3(%rip), %r10
+	movq	v2(%rip), %r9
+	movq	v1(%rip), %rdi
+	movl	-76(%rbp), %esi
+	movq	-72(%rbp), %rax
+	movq	%rbx, -104(%rbp)
+	movsd	-104(%rbp), %xmm6
+	movq	%r11, -104(%rbp)
+	movsd	-104(%rbp), %xmm5
+	movq	%r8, -104(%rbp)
+	movsd	-104(%rbp), %xmm4
+	movl	%r12d, %r8d
+	movq	%r10, -104(%rbp)
+	movsd	-104(%rbp), %xmm3
+	movq	%r9, -104(%rbp)
+	movsd	-104(%rbp), %xmm2
+	movq	%rdi, -104(%rbp)
+	movsd	-104(%rbp), %xmm1
+	movq	%rax, -104(%rbp)
+	movsd	-104(%rbp), %xmm0
+	movl	$.LC3, %edi
+	movl	$7, %eax
+	call	printf
+	movl	$0, %eax
+	movq	-24(%rbp), %rbx
+	xorq	%fs:40, %rbx
+	je	.L13
+	call	__stack_chk_fail
+.L13:
+	addq	$96, %rsp
+	popq	%rbx
+	popq	%r12
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	main, .-main
+	.section	.rodata
+	.align 8
+.LC1:
+	.long	2576980378
+	.long	1069128089
+	.align 8
+.LC2:
+	.long	0
+	.long	1104006501
+	.ident	"GCC: (Ubuntu 4.9.2-10ubuntu13) 4.9.2"
+	.section	.note.GNU-stack,"",@progbits

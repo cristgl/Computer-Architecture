@@ -1,0 +1,290 @@
+	.file	"ej1m.c"
+	.section	.text.unlikely,"ax",@progbits
+.LCOLDB0:
+	.text
+.LHOTB0:
+	.p2align 4,,15
+	.globl	multiplicarMatrices
+	.type	multiplicarMatrices, @function
+multiplicarMatrices:
+.LFB39:
+	.cfi_startproc
+	movl	dimension_matrices(%rip), %r11d
+	pushq	%r13
+	.cfi_def_cfa_offset 16
+	.cfi_offset 13, -16
+	movq	%rsi, %r13
+	pushq	%r12
+	.cfi_def_cfa_offset 24
+	.cfi_offset 12, -24
+	pushq	%rbp
+	.cfi_def_cfa_offset 32
+	.cfi_offset 6, -32
+	xorl	%ebp, %ebp
+	pushq	%rbx
+	.cfi_def_cfa_offset 40
+	.cfi_offset 3, -40
+	movq	%rdi, %r12
+	movq	%rdx, %rsi
+	testl	%r11d, %r11d
+	jle	.L3
+.L8:
+	movq	(%r12,%rbp,8), %rbx
+	movq	0(%r13,%rbp,8), %rdx
+	xorl	%r10d, %r10d
+	xorl	%edi, %edi
+	.p2align 4,,10
+	.p2align 3
+.L7:
+	xorl	%eax, %eax
+	xorl	%r8d, %r8d
+	.p2align 4,,10
+	.p2align 3
+.L4:
+	movq	(%rsi,%rax,8), %r9
+	movl	(%rdx,%rax,4), %ecx
+	addq	$1, %rax
+	imull	(%r9,%r10), %ecx
+	addl	%ecx, %r8d
+	cmpl	%eax, %r11d
+	jg	.L4
+	movl	%r8d, (%rbx,%r10)
+	movl	dimension_matrices(%rip), %r11d
+	addl	$1, %edi
+	addq	$4, %r10
+	cmpl	%edi, %r11d
+	jg	.L7
+	leal	1(%rbp), %eax
+	addq	$1, %rbp
+	cmpl	%r11d, %eax
+	jl	.L8
+.L3:
+	popq	%rbx
+	.cfi_def_cfa_offset 32
+	popq	%rbp
+	.cfi_def_cfa_offset 24
+	popq	%r12
+	.cfi_def_cfa_offset 16
+	popq	%r13
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE39:
+	.size	multiplicarMatrices, .-multiplicarMatrices
+	.section	.text.unlikely
+.LCOLDE0:
+	.text
+.LHOTE0:
+	.section	.rodata.str1.8,"aMS",@progbits,1
+	.align 8
+.LC1:
+	.string	"Falta el n\303\272mero de componentes"
+	.align 8
+.LC2:
+	.string	"Tama\303\261o demasiado grande. No superar %d\n\n"
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC4:
+	.string	"Tiempo sin optimizar: %11.9f\t"
+.LC5:
+	.string	"Resultado[0][0] = %d\n"
+.LC6:
+	.string	"Resultado[N-1,N-1]=%d\n"
+	.section	.text.unlikely
+.LCOLDB7:
+	.section	.text.startup,"ax",@progbits
+.LHOTB7:
+	.p2align 4,,15
+	.globl	main
+	.type	main, @function
+main:
+.LFB40:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	subq	$56, %rsp
+	.cfi_def_cfa_offset 112
+	movq	%fs:40, %rax
+	movq	%rax, 40(%rsp)
+	xorl	%eax, %eax
+	cmpl	$1, %edi
+	jle	.L25
+	movq	8(%rsi), %rdi
+	movl	$10, %edx
+	xorl	%esi, %esi
+	call	strtol
+	cmpl	$4096, %eax
+	movq	%rax, %r13
+	movl	%eax, dimension_matrices(%rip)
+	jg	.L26
+	movslq	%eax, %r14
+	leaq	0(,%r14,8), %r12
+	movq	%r12, %rdi
+	call	malloc
+	movq	%r12, %rdi
+	movq	%rax, %rbp
+	call	malloc
+	movq	%r12, %rdi
+	movq	%rax, %rbx
+	call	malloc
+	testl	%r13d, %r13d
+	movq	%rax, %r12
+	jle	.L17
+	leal	-1(%r13), %eax
+	salq	$2, %r14
+	xorl	%r13d, %r13d
+	leaq	8(,%rax,8), %r15
+	.p2align 4,,10
+	.p2align 3
+.L18:
+	movq	%r14, %rdi
+	call	malloc
+	movq	%r14, %rdi
+	movq	%rax, 0(%rbp,%r13)
+	call	malloc
+	movq	%r14, %rdi
+	movq	%rax, (%rbx,%r13)
+	call	malloc
+	movq	%rax, (%r12,%r13)
+	addq	$8, %r13
+	cmpq	%r15, %r13
+	jne	.L18
+	xorl	%r10d, %r10d
+	.p2align 4,,10
+	.p2align 3
+.L19:
+	movq	0(%rbp,%r10,8), %r9
+	movq	(%rbx,%r10,8), %rdi
+	movl	%r10d, %edx
+	xorl	%eax, %eax
+	xorl	%ecx, %ecx
+	.p2align 4,,10
+	.p2align 3
+.L20:
+	leal	(%rdx,%rcx), %esi
+	movl	%ecx, %r8d
+	addl	$1, %r8d
+	movl	%esi, (%r9,%rcx,4)
+	movl	%eax, (%rdi,%rcx,4)
+	addq	$1, %rcx
+	movl	dimension_matrices(%rip), %esi
+	addl	%edx, %eax
+	cmpl	%esi, %r8d
+	jl	.L20
+	leal	1(%r10), %eax
+	addq	$1, %r10
+	cmpl	%esi, %eax
+	jl	.L19
+.L17:
+	movq	%rsp, %rsi
+	xorl	%edi, %edi
+	call	clock_gettime
+	movq	%rbx, %rdx
+	movq	%rbp, %rsi
+	movq	%r12, %rdi
+	call	multiplicarMatrices
+	leaq	16(%rsp), %rsi
+	xorl	%edi, %edi
+	call	clock_gettime
+	movq	16(%rsp), %rax
+	subq	(%rsp), %rax
+	movl	$.LC4, %esi
+	pxor	%xmm1, %xmm1
+	movl	$1, %edi
+	pxor	%xmm0, %xmm0
+	cvtsi2sdq	%rax, %xmm1
+	movq	24(%rsp), %rax
+	subq	8(%rsp), %rax
+	cvtsi2sdq	%rax, %xmm0
+	movl	$1, %eax
+	divsd	.LC3(%rip), %xmm0
+	addsd	%xmm1, %xmm0
+	call	__printf_chk
+	movl	$10, %edi
+	call	putchar
+	movq	(%r12), %rax
+	movl	$.LC5, %esi
+	movl	$1, %edi
+	movl	(%rax), %edx
+	xorl	%eax, %eax
+	call	__printf_chk
+	movslq	dimension_matrices(%rip), %rax
+	movl	$.LC6, %esi
+	movl	$1, %edi
+	movq	-8(%r12,%rax,8), %rdx
+	movl	-4(%rdx,%rax,4), %edx
+	xorl	%eax, %eax
+	call	__printf_chk
+	movq	%r12, %rdi
+	call	free
+	movq	%rbp, %rdi
+	call	free
+	movq	%rbx, %rdi
+	call	free
+	xorl	%eax, %eax
+.L15:
+	movq	40(%rsp), %rbx
+	xorq	%fs:40, %rbx
+	jne	.L27
+	addq	$56, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+.L26:
+	.cfi_restore_state
+	movl	$4096, %edx
+	movl	$.LC2, %esi
+	movl	$1, %edi
+	xorl	%eax, %eax
+	call	__printf_chk
+	movl	$1, %eax
+	jmp	.L15
+.L25:
+	movl	$.LC1, %edi
+	call	puts
+	movl	$1, %eax
+	jmp	.L15
+.L27:
+	call	__stack_chk_fail
+	.cfi_endproc
+.LFE40:
+	.size	main, .-main
+	.section	.text.unlikely
+.LCOLDE7:
+	.section	.text.startup
+.LHOTE7:
+	.comm	dimension_matrices,4,4
+	.section	.rodata.cst8,"aM",@progbits,8
+	.align 8
+.LC3:
+	.long	0
+	.long	1104006501
+	.ident	"GCC: (Ubuntu 4.9.2-10ubuntu13) 4.9.2"
+	.section	.note.GNU-stack,"",@progbits

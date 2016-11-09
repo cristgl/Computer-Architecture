@@ -1,0 +1,101 @@
+la api no consta solo de funciones sino de directivas interpretables,
+funciones de biblioteca y variables de entorno
+la api se situa en el nivel de programacion, el uso de directivas se hace
+sobre c,c++ y fortran
+aunque permite la programacion paralela no lo hace de forma automatica.
+el modelo es multihebra, paradigma de varibales compartidas. Es una
+herramienta portable y para casi todas las plataformas(SO, arq de hardware)
+
+
+En practicas usamos la 2.5
+
+directivas: aquellas lineas que comienzan con pragma, interpretables por el compilador sustituyendolas por codigo
+funciones: modificar diversos aspectos( numero de hebras, preguntar por ellas... en tiempo de ejecucion)
+variables de entorno: no forman parte del codigo, modif el comportamiento antes de la ejecucion del codigo
+
+sintaxis directivas en c/c++
+#pragma omp nombre_directiva(=fortran y c++) [clausulas] \n
+las clausulas pueden modificar el comportamiento de la directiva
+
+
+Portabilidad
+un unico codigo se puede ejecutar en paralelo con -fopenmp y secuencial quitando esa opcion
+el compilador activa la directiva _OPENMP, con la que podemos hacer codigo portable
+
+definiciones:
+directiva ejecutable (que aparece en un trozo de codigo que se va a eje)
+bloque estructurado (conjunto de sentencias con una entrada y una salida)
+construccion (cjto de una directiva con bloque estructurado, al que afecta el comportamiento de dicha directiva)
+region: codgio escrito que se va a ejecutar.
+
+
+
+parallel: ejec con bloque que lleva barrera implicita: especifica que el bloque al que afecta se va
+a ejecutar en paralelo y todas las hebras van a ejectuar el mismo codigo. NO HAY REPARTO DE CÓGIDO
+cuando todas ejecutan el código y cuando todas han terminado ( por eso lleva una barrera implícita) la 
+hebra máster las destruye y solo ella continua con la ejecucion secuencial.
+cada hebra podria crear mas hebras (anidado)
+
+
+
+la numeracion es 0 -> n-1 (una variable de entorno permite modif el nnumero de hebras)
+OMP_NUM_THREADS -> tiene más prioridad que el valor por defecto que usa la libreria openmp
+tb se usa setenv, export... Si cierro terminal ya no tengo la var de entorno.
+
+establecer OMP_DYNAMIC a false cada vez que abra un terminal.
+
+parallel es la UNICA directiva que crea hebras, el resto deben aparecer dentro del bloque 
+estructurado de un parallel (solo reparto de trabajos, exclusion mutua...)
+
+
+trabajo compartido: single solo realiza la tarea una unica hebra
+
+DO/for: //trabajo compartido
+despues de #pragma omp for va un for siempre. Barrera implicita al final pero no al inicio,
+es decir, no tienen que esperarse a estar todas para comenzar a ejecutar el código.
+Todo el código que va a permitir que se repartan las iteraciones entre hebras se hace en tiempo de ejecución.
+Hay que conocer el número de iteraciones.
+Schedule permite decir como queremos que se haga ese reparto.
+El programador debe ser responsable de que no haya dependencias.
+No hay extracción de paralelismo automático.
+
+
+sections: //trabajo compartido
+reparte tareas, aquellas especificadas en su bloque estructurado. 
+Cada sections debe llevar tantas directivas section como tareas queremos que se repartan entre las hebras
+Barrera implícita al final pero no al principio.
+hay tantas hebras como section. cada section lo ejecuta una hebra y es ejecutado una sola vez.
+si hay menos hebras que section, habra hebras que ejecuten más de una tarea pero TODOS los section se ejecutan.
+
+
+single: //trabajo compartido
+ejecuta de forma secuencial
+barrera implícita al final
+no controla asignación de tareas (normalmente la ej la primera hebra que llega)
+es la estructura más eficiente
+
+
+
+las versiones combinadas solo tendrán una única barrera implícita al final
+
+directivas para comunicación
+
+barrier:
+hasta que no lleguen todas las hebras a esta directiva no se continua
+
+critical:
+evita que varias hebras accedan a variables compartidas a la vez
+exclusión mutua.
+
+atomic:
+hace lo mismo que critical pero es mas eficiente porque admite solo
+una instruccion (preincremento, postincremento...)
+
+
+directiva master:
+No lleva barrera implícita al final. El trozo de código se ejecuta de forma
+secuencial por la hebra máster.
+necesitamos una directiva barrier antes de esta 
+
+
+

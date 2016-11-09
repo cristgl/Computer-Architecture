@@ -1,0 +1,117 @@
+00001 
+00002 /*
+00003  * file://${mxsl_na}/src/daxpy.c
+00004  */
+00005 
+00006 /*! \brief Add a constant times a vector to a vector: (dy += da*dx)
+00007  *   \date 2004APR11
+00008  *
+00009  * BLAS: daxpy.f (Level I BLAS)
+00010  */
+00011 
+00012 #include <stdio.h>
+00013 #include <stdlib.h>
+00014 #include <math.h>
+00015 
+00016 /*@-realcompare@*/
+00017 void mxsl_na_CBLAS_daxpy
+00018 (
+00019  int n /*! array size */,
+00020  double da /*! double constant */,
+00021  double *dx /*! input double array */,
+00022  int incx /*! input stride */,
+00023  double *dy /*! output double array */,
+00024  int incy /*! output stride */
+00025 )
+00026 {
+00027 # define FNDX(I) ((I)-1)
+00028 # define DY(I) (dy[FNDX(I)])
+00029 # define DX(I) (dx[FNDX(I)])
+00030 # define MOD(I,J) ((I)%(J))
+00031   static int i;
+00032   static int m;
+00033   static int ix;
+00034   static int iy;
+00035   static int mp1;
+00036   if (n <= 0)
+00037     goto bye;
+00038   if (da == 0.)
+00039     goto bye;
+00040   if (incx == 1 && incy == 1)
+00041     goto L20;
+00042   /*
+00043   **  code for unequal increments or equal increments not equal to 1 
+00044   */
+00045   ix = 1;
+00046   iy = 1;
+00047   if (incx < 0)
+00048     ix = (-(n) + 1) * incx + 1;
+00049   if (incy < 0)
+00050     iy = (-(n) + 1) * incy + 1;
+00051   for (i = 1; i <= n; ++i)
+00052     {
+00053       DY(iy) += da * DX(ix);
+00054       ix += incx;
+00055       iy += incy;
+00056     }
+00057   goto bye;
+00058   /*
+00059   **  code for both increments equal to 1   
+00060   */
+00061 L20:
+00062   m = MOD(n,4);
+00063   if (m == 0)
+00064     goto L40;
+00065   for (i = 1; i <= m; ++i)
+00066     DY(i) += da * DX(i);
+00067   if (n < 4)
+00068     goto bye;
+00069 L40:
+00070   mp1 = m + 1;
+00071   for (i = mp1; i <= n; i += 4)
+00072     {
+00073       DY(i) += da * DX(i);
+00074       DY(i + 1) += da * DX(i + 1);
+00075       DY(i + 2) += da * DX(i + 2);
+00076       DY(i + 3) += da * DX(i + 3);
+00077     }
+00078 bye:
+00079   return;
+00080 # undef FNDX
+00081 # undef DY
+00082 # undef DX
+00083 # undef MOD
+00084 }
+00085 
+00086 # ifdef XTEST
+00087 # undef SIZE
+00088 # define SIZE 10
+00089 int main()
+00090 {
+00091   const int N=SIZE;
+00092   double X[SIZE] = {  0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
+00093   double Y[SIZE] = { -1.0,-2.0,-3.0,-4.0,-5.0,-6.0,-7.0,-8.0,-9.0,-10.};
+00094   const int incX = 1;
+00095   const int incY = 1;
+00096   const double alpha=1.5;
+00097   int j;
+00098   char *prog="xmxsl_na_CBLAS_daxpy";
+00099 
+00100   printf("\nBefore:\n");
+00101   for (j=0; j<SIZE; j++)
+00102     printf("%d  X[]=%g  Y[]=%g\n",j,X[j],Y[j]);
+00103   printf("alpha=%g\n\n",alpha);
+00104 
+00105   printf("\n%s: Y += alpha*X\n",prog);
+00106   mxsl_na_CBLAS_daxpy( N, alpha, X,incX, Y, incY);
+00107 
+00108   printf("\nAfter:\n");
+00109   for (j=0; j<SIZE; j++)
+00110     printf("%d  X[]=%g  Y[]=%g\n",j,X[j],Y[j]);
+00111 
+00112   exit(0);
+00113 }
+00114 /*@+realcompare@*/
+00115 # undef SIZE
+00116 # endif
+00117 #

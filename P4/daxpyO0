@@ -1,0 +1,274 @@
+	.file	"daxpy.c"
+	.text
+	.globl	daxpy
+	.type	daxpy, @function
+daxpy:
+.LFB2:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movq	%rdi, -24(%rbp)
+	movq	%rsi, -32(%rbp)
+	movsd	%xmm0, -40(%rbp)
+	movl	%edx, -44(%rbp)
+	movl	$0, -4(%rbp)
+	jmp	.L2
+.L3:
+	movl	-4(%rbp), %eax
+	leaq	0(,%rax,8), %rdx
+	movq	-24(%rbp), %rax
+	addq	%rdx, %rax
+	movl	-4(%rbp), %edx
+	leaq	0(,%rdx,8), %rcx
+	movq	-24(%rbp), %rdx
+	addq	%rcx, %rdx
+	movsd	(%rdx), %xmm1
+	movl	-4(%rbp), %edx
+	leaq	0(,%rdx,8), %rcx
+	movq	-32(%rbp), %rdx
+	addq	%rcx, %rdx
+	movsd	(%rdx), %xmm0
+	mulsd	-40(%rbp), %xmm0
+	addsd	%xmm1, %xmm0
+	movsd	%xmm0, (%rax)
+	addl	$1, -4(%rbp)
+.L2:
+	movl	-4(%rbp), %eax
+	cmpl	-44(%rbp), %eax
+	jb	.L3
+	nop
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	daxpy, .-daxpy
+	.section	.rodata
+.LC21:
+	.string	"%d  X[]=%g  Y[]=%g\n"
+.LC23:
+	.string	"Tiempo: %11.9f\t"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB3:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$272, %rsp
+	movl	%edi, -244(%rbp)
+	movq	%rsi, -256(%rbp)
+	movq	%fs:40, %rax
+	movq	%rax, -8(%rbp)
+	xorl	%eax, %eax
+	movl	$10, -228(%rbp)
+	pxor	%xmm0, %xmm0
+	movsd	%xmm0, -176(%rbp)
+	movsd	.LC1(%rip), %xmm0
+	movsd	%xmm0, -168(%rbp)
+	movsd	.LC2(%rip), %xmm0
+	movsd	%xmm0, -160(%rbp)
+	movsd	.LC3(%rip), %xmm0
+	movsd	%xmm0, -152(%rbp)
+	movsd	.LC4(%rip), %xmm0
+	movsd	%xmm0, -144(%rbp)
+	movsd	.LC5(%rip), %xmm0
+	movsd	%xmm0, -136(%rbp)
+	movsd	.LC6(%rip), %xmm0
+	movsd	%xmm0, -128(%rbp)
+	movsd	.LC7(%rip), %xmm0
+	movsd	%xmm0, -120(%rbp)
+	movsd	.LC8(%rip), %xmm0
+	movsd	%xmm0, -112(%rbp)
+	movsd	.LC9(%rip), %xmm0
+	movsd	%xmm0, -104(%rbp)
+	movsd	.LC10(%rip), %xmm0
+	movsd	%xmm0, -96(%rbp)
+	movsd	.LC11(%rip), %xmm0
+	movsd	%xmm0, -88(%rbp)
+	movsd	.LC12(%rip), %xmm0
+	movsd	%xmm0, -80(%rbp)
+	movsd	.LC13(%rip), %xmm0
+	movsd	%xmm0, -72(%rbp)
+	movsd	.LC14(%rip), %xmm0
+	movsd	%xmm0, -64(%rbp)
+	movsd	.LC15(%rip), %xmm0
+	movsd	%xmm0, -56(%rbp)
+	movsd	.LC16(%rip), %xmm0
+	movsd	%xmm0, -48(%rbp)
+	movsd	.LC17(%rip), %xmm0
+	movsd	%xmm0, -40(%rbp)
+	movsd	.LC18(%rip), %xmm0
+	movsd	%xmm0, -32(%rbp)
+	movsd	.LC19(%rip), %xmm0
+	movsd	%xmm0, -24(%rbp)
+	movsd	.LC20(%rip), %xmm0
+	movsd	%xmm0, -224(%rbp)
+	leaq	-208(%rbp), %rax
+	movq	%rax, %rsi
+	movl	$0, %edi
+	call	clock_gettime
+	movl	-228(%rbp), %edx
+	movq	-224(%rbp), %rsi
+	leaq	-176(%rbp), %rcx
+	leaq	-96(%rbp), %rax
+	movq	%rsi, -264(%rbp)
+	movsd	-264(%rbp), %xmm0
+	movq	%rcx, %rsi
+	movq	%rax, %rdi
+	call	daxpy
+	leaq	-192(%rbp), %rax
+	movq	%rax, %rsi
+	movl	$0, %edi
+	call	clock_gettime
+	movl	$0, -232(%rbp)
+	jmp	.L5
+.L6:
+	movl	-232(%rbp), %eax
+	cltq
+	movsd	-96(%rbp,%rax,8), %xmm0
+	movl	-232(%rbp), %eax
+	cltq
+	movq	-176(%rbp,%rax,8), %rdx
+	movl	-232(%rbp), %eax
+	movapd	%xmm0, %xmm1
+	movq	%rdx, -264(%rbp)
+	movsd	-264(%rbp), %xmm0
+	movl	%eax, %esi
+	movl	$.LC21, %edi
+	movl	$2, %eax
+	call	printf
+	addl	$1, -232(%rbp)
+.L5:
+	cmpl	$9, -232(%rbp)
+	jle	.L6
+	movq	-192(%rbp), %rdx
+	movq	-208(%rbp), %rax
+	subq	%rax, %rdx
+	movq	%rdx, %rax
+	pxor	%xmm1, %xmm1
+	cvtsi2sdq	%rax, %xmm1
+	movq	-184(%rbp), %rdx
+	movq	-200(%rbp), %rax
+	subq	%rax, %rdx
+	movq	%rdx, %rax
+	pxor	%xmm0, %xmm0
+	cvtsi2sdq	%rax, %xmm0
+	movsd	.LC22(%rip), %xmm2
+	divsd	%xmm2, %xmm0
+	addsd	%xmm1, %xmm0
+	movsd	%xmm0, -216(%rbp)
+	movq	-216(%rbp), %rax
+	movq	%rax, -264(%rbp)
+	movsd	-264(%rbp), %xmm0
+	movl	$.LC23, %edi
+	movl	$1, %eax
+	call	printf
+	movl	$10, %edi
+	call	putchar
+	movl	$0, %eax
+	movq	-8(%rbp), %rcx
+	xorq	%fs:40, %rcx
+	je	.L8
+	call	__stack_chk_fail
+.L8:
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE3:
+	.size	main, .-main
+	.section	.rodata
+	.align 8
+.LC1:
+	.long	0
+	.long	1072693248
+	.align 8
+.LC2:
+	.long	0
+	.long	1073741824
+	.align 8
+.LC3:
+	.long	0
+	.long	1074266112
+	.align 8
+.LC4:
+	.long	0
+	.long	1074790400
+	.align 8
+.LC5:
+	.long	0
+	.long	1075052544
+	.align 8
+.LC6:
+	.long	0
+	.long	1075314688
+	.align 8
+.LC7:
+	.long	0
+	.long	1075576832
+	.align 8
+.LC8:
+	.long	0
+	.long	1075838976
+	.align 8
+.LC9:
+	.long	0
+	.long	1075970048
+	.align 8
+.LC10:
+	.long	0
+	.long	-1074790400
+	.align 8
+.LC11:
+	.long	0
+	.long	-1073741824
+	.align 8
+.LC12:
+	.long	0
+	.long	-1073217536
+	.align 8
+.LC13:
+	.long	0
+	.long	-1072693248
+	.align 8
+.LC14:
+	.long	0
+	.long	-1072431104
+	.align 8
+.LC15:
+	.long	0
+	.long	-1072168960
+	.align 8
+.LC16:
+	.long	0
+	.long	-1071906816
+	.align 8
+.LC17:
+	.long	0
+	.long	-1071644672
+	.align 8
+.LC18:
+	.long	0
+	.long	-1071513600
+	.align 8
+.LC19:
+	.long	0
+	.long	-1071382528
+	.align 8
+.LC20:
+	.long	0
+	.long	1073217536
+	.align 8
+.LC22:
+	.long	0
+	.long	1104006501
+	.ident	"GCC: (Ubuntu 5.2.1-22ubuntu2) 5.2.1 20151010"
+	.section	.note.GNU-stack,"",@progbits

@@ -1,0 +1,266 @@
+	.file	"daxpy.c"
+	.section	.text.unlikely,"ax",@progbits
+.LCOLDB0:
+	.text
+.LHOTB0:
+	.p2align 4,,15
+	.globl	daxpy
+	.type	daxpy, @function
+daxpy:
+.LFB41:
+	.cfi_startproc
+	testl	%edx, %edx
+	je	.L22
+	leaq	16(%rsi), %rax
+	cmpq	%rax, %rdi
+	leaq	16(%rdi), %rax
+	setnb	%cl
+	cmpq	%rax, %rsi
+	setnb	%al
+	orb	%al, %cl
+	je	.L3
+	cmpl	$6, %edx
+	jbe	.L3
+	movq	%rdi, %rax
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	salq	$60, %rax
+	shrq	$63, %rax
+	cmpl	%edx, %eax
+	cmova	%edx, %eax
+	xorl	%r9d, %r9d
+	testl	%eax, %eax
+	je	.L4
+	movsd	(%rsi), %xmm1
+	movl	$1, %r9d
+	mulsd	%xmm0, %xmm1
+	addsd	(%rdi), %xmm1
+	movsd	%xmm1, (%rdi)
+.L4:
+	subl	%eax, %edx
+	movapd	%xmm0, %xmm2
+	leal	-2(%rdx), %r10d
+	movl	%eax, %eax
+	xorl	%ecx, %ecx
+	unpcklpd	%xmm2, %xmm2
+	salq	$3, %rax
+	shrl	%r10d
+	leaq	(%rdi,%rax), %r11
+	xorl	%r8d, %r8d
+	addl	$1, %r10d
+	addq	%rsi, %rax
+	leal	(%r10,%r10), %ebx
+.L5:
+	movupd	(%rax,%rcx), %xmm1
+	addl	$1, %r8d
+	mulpd	%xmm2, %xmm1
+	addpd	(%r11,%rcx), %xmm1
+	movaps	%xmm1, (%r11,%rcx)
+	addq	$16, %rcx
+	cmpl	%r10d, %r8d
+	jb	.L5
+	cmpl	%ebx, %edx
+	leal	(%r9,%rbx), %eax
+	je	.L1
+	mulsd	(%rsi,%rax,8), %xmm0
+	leaq	(%rdi,%rax,8), %rdx
+	addsd	(%rdx), %xmm0
+	movsd	%xmm0, (%rdx)
+.L1:
+	popq	%rbx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 8
+.L22:
+	rep ret
+	.p2align 4,,10
+	.p2align 3
+.L3:
+	xorl	%eax, %eax
+	.p2align 4,,10
+	.p2align 3
+.L8:
+	movsd	(%rsi,%rax,8), %xmm1
+	mulsd	%xmm0, %xmm1
+	addsd	(%rdi,%rax,8), %xmm1
+	movsd	%xmm1, (%rdi,%rax,8)
+	addq	$1, %rax
+	cmpl	%eax, %edx
+	ja	.L8
+	rep ret
+	.cfi_endproc
+.LFE41:
+	.size	daxpy, .-daxpy
+	.section	.text.unlikely
+.LCOLDE0:
+	.text
+.LHOTE0:
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC11:
+	.string	"%d  X[]=%g  Y[]=%g\n"
+.LC13:
+	.string	"Tiempo: %11.9f\t"
+	.section	.text.unlikely
+.LCOLDB14:
+	.section	.text.startup,"ax",@progbits
+.LHOTB14:
+	.p2align 4,,15
+	.globl	main
+	.type	main, @function
+main:
+.LFB42:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	xorl	%edi, %edi
+	xorl	%ebx, %ebx
+	subq	$224, %rsp
+	.cfi_def_cfa_offset 240
+	movapd	.LC1(%rip), %xmm0
+	leaq	16(%rsp), %rsi
+	movq	%fs:40, %rax
+	movq	%rax, 216(%rsp)
+	xorl	%eax, %eax
+	movaps	%xmm0, 48(%rsp)
+	movapd	.LC2(%rip), %xmm0
+	movaps	%xmm0, 64(%rsp)
+	movapd	.LC3(%rip), %xmm0
+	movaps	%xmm0, 80(%rsp)
+	movapd	.LC4(%rip), %xmm0
+	movaps	%xmm0, 96(%rsp)
+	movapd	.LC5(%rip), %xmm0
+	movaps	%xmm0, 112(%rsp)
+	call	clock_gettime
+	leaq	32(%rsp), %rsi
+	xorl	%edi, %edi
+	movapd	.LC6(%rip), %xmm0
+	movaps	%xmm0, 128(%rsp)
+	movapd	.LC7(%rip), %xmm0
+	movaps	%xmm0, 144(%rsp)
+	movapd	.LC8(%rip), %xmm0
+	movaps	%xmm0, 160(%rsp)
+	movapd	.LC9(%rip), %xmm0
+	movaps	%xmm0, 176(%rsp)
+	movapd	.LC10(%rip), %xmm0
+	movaps	%xmm0, 192(%rsp)
+	call	clock_gettime
+	.p2align 4,,10
+	.p2align 3
+.L25:
+	movl	%ebx, %edx
+	movl	$.LC11, %esi
+	movl	$1, %edi
+	movl	$2, %eax
+	movsd	48(%rsp,%rbx,8), %xmm2
+	movsd	128(%rsp,%rbx,8), %xmm1
+	addq	$1, %rbx
+	movapd	%xmm2, %xmm0
+	movsd	%xmm2, 8(%rsp)
+	call	__printf_chk
+	cmpq	$10, %rbx
+	jne	.L25
+	movq	40(%rsp), %rax
+	subq	24(%rsp), %rax
+	movl	$.LC13, %esi
+	pxor	%xmm0, %xmm0
+	movl	$1, %edi
+	pxor	%xmm1, %xmm1
+	cvtsi2sdq	%rax, %xmm0
+	movq	32(%rsp), %rax
+	subq	16(%rsp), %rax
+	cvtsi2sdq	%rax, %xmm1
+	movl	$1, %eax
+	divsd	.LC12(%rip), %xmm0
+	addsd	%xmm1, %xmm0
+	call	__printf_chk
+	movl	$10, %edi
+	call	putchar
+	xorl	%eax, %eax
+	movq	216(%rsp), %rcx
+	xorq	%fs:40, %rcx
+	jne	.L29
+	addq	$224, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 16
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	ret
+.L29:
+	.cfi_restore_state
+	call	__stack_chk_fail
+	.cfi_endproc
+.LFE42:
+	.size	main, .-main
+	.section	.text.unlikely
+.LCOLDE14:
+	.section	.text.startup
+.LHOTE14:
+	.section	.rodata.cst16,"aM",@progbits,16
+	.align 16
+.LC1:
+	.long	0
+	.long	0
+	.long	0
+	.long	1072693248
+	.align 16
+.LC2:
+	.long	0
+	.long	1073741824
+	.long	0
+	.long	1074266112
+	.align 16
+.LC3:
+	.long	0
+	.long	1074790400
+	.long	0
+	.long	1075052544
+	.align 16
+.LC4:
+	.long	0
+	.long	1075314688
+	.long	0
+	.long	1075576832
+	.align 16
+.LC5:
+	.long	0
+	.long	1075838976
+	.long	0
+	.long	1075970048
+	.align 16
+.LC6:
+	.long	0
+	.long	-1074790400
+	.long	0
+	.long	-1075838976
+	.align 16
+.LC7:
+	.long	0
+	.long	0
+	.long	0
+	.long	1071644672
+	.align 16
+.LC8:
+	.long	0
+	.long	1072693248
+	.long	0
+	.long	1073217536
+	.align 16
+.LC9:
+	.long	0
+	.long	1073741824
+	.long	0
+	.long	1074003968
+	.align 16
+.LC10:
+	.long	0
+	.long	1074266112
+	.long	0
+	.long	1074528256
+	.section	.rodata.cst8,"aM",@progbits,8
+	.align 8
+.LC12:
+	.long	0
+	.long	1104006501
+	.ident	"GCC: (Ubuntu 5.2.1-22ubuntu2) 5.2.1 20151010"
+	.section	.note.GNU-stack,"",@progbits
